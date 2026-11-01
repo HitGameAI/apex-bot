@@ -17,7 +17,7 @@ import (
 	"net/http"
 	"testing"
 
-	gobot "github.com/kamalyes/go-bot"
+	gobot "github.com/HitGameAI/apex-bot"
 )
 
 // TestChatStoreListSortedByID 验证快照列表按 ID 稳定排序

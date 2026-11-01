@@ -15,7 +15,7 @@ import (
 	"strings"
 	"testing"
 
-	gobot "github.com/kamalyes/go-bot"
+	gobot "github.com/HitGameAI/apex-bot"
 )
 
 // TestMarkdownTableToAlignedRows 验证表格降级为根包对齐行（无围栏、无竖线）

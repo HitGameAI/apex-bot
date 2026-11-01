@@ -18,7 +18,7 @@ import (
 	"testing"
 	"time"
 
-	gobot "github.com/kamalyes/go-bot"
+	gobot "github.com/HitGameAI/apex-bot"
 )
 
 // newWebhookAdapter 基于环境变量里的真实 webhook 构造适配器：

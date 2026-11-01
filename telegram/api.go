@@ -17,7 +17,7 @@ import (
 	"net/http"
 	"time"
 
-	gobot "github.com/kamalyes/go-bot"
+	gobot "github.com/HitGameAI/apex-bot"
 )
 
 // callAPI 向 Bot API 发送 JSON POST 并解码统一响应包，

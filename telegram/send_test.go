@@ -21,7 +21,7 @@ import (
 	"testing"
 	"time"
 
-	gobot "github.com/kamalyes/go-bot"
+	gobot "github.com/HitGameAI/apex-bot"
 )
 
 // captureRequest 返回一个捕获路径与请求体并回写指定响应的 handler

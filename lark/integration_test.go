@@ -18,7 +18,7 @@ import (
 	"testing"
 	"time"
 
-	gobot "github.com/kamalyes/go-bot"
+	gobot "github.com/HitGameAI/apex-bot"
 )
 
 // parseWebhook 把完整 webhook 地址拆为 APIBase 与 token

@@ -18,7 +18,7 @@ import (
 	"testing"
 	"time"
 
-	gobot "github.com/kamalyes/go-bot"
+	gobot "github.com/HitGameAI/apex-bot"
 )
 
 // skipIntegration 统一门控：未设置凭据或 -short 模式时跳过真实 API 测试

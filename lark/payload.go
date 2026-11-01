@@ -14,7 +14,7 @@ package lark
 import (
 	"strings"
 
-	gobot "github.com/kamalyes/go-bot"
+	gobot "github.com/HitGameAI/apex-bot"
 )
 
 // renderMentions 把 @ 提及以 Lark 的 <at> 标签形式追加到文本尾部：

@@ -16,7 +16,7 @@ import (
 	"encoding/json"
 	"net/url"
 
-	gobot "github.com/kamalyes/go-bot"
+	gobot "github.com/HitGameAI/apex-bot"
 )
 
 // Send 实现 gobot.Adapter：text/markdown 均以 title + desp 表单透传

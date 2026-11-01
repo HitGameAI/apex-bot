@@ -15,7 +15,7 @@ import (
 	"regexp"
 	"strings"
 
-	gobot "github.com/kamalyes/go-bot"
+	gobot "github.com/HitGameAI/apex-bot"
 )
 
 // Lark 卡片富文本不支持的行内语法的降级规则

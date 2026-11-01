@@ -14,7 +14,7 @@ package lark
 import (
 	"testing"
 
-	gobot "github.com/kamalyes/go-bot"
+	gobot "github.com/HitGameAI/apex-bot"
 )
 
 // TestMarkdownToCardMarkdownHeadings 验证各级标题降级为加粗行

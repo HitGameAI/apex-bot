@@ -15,9 +15,9 @@ import (
 	"context"
 	"time"
 
-	gobot "github.com/kamalyes/go-bot"
-	gologger "github.com/kamalyes/go-logger"
-	"github.com/kamalyes/go-toolbox/pkg/mathx"
+	gobot "github.com/HitGameAI/apex-bot"
+	gologger "github.com/HitGameAI/apex-toolbox/pkg/logger"
+	"github.com/HitGameAI/apex-toolbox/pkg/mathx"
 )
 
 // DefaultEventPollTimeout 是单次长轮询窗口的缺省秒数，

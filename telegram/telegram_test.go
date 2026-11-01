@@ -19,8 +19,8 @@ import (
 	"testing"
 	"time"
 
-	gobot "github.com/kamalyes/go-bot"
-	"github.com/kamalyes/go-toolbox/pkg/httpx"
+	gobot "github.com/HitGameAI/apex-bot"
+	"github.com/HitGameAI/apex-toolbox/pkg/httpx"
 )
 
 // newTestAdapter 基于 httptest 服务器构造适配器，APIBase 指向测试服务器

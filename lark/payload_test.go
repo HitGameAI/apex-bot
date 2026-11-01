@@ -14,7 +14,7 @@ package lark
 import (
 	"testing"
 
-	gobot "github.com/kamalyes/go-bot"
+	gobot "github.com/HitGameAI/apex-bot"
 )
 
 // TestRenderMentionsNoAt 验证无提及时原样返回

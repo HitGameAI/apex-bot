@@ -15,7 +15,7 @@ import (
 	"context"
 	"strconv"
 
-	gobot "github.com/kamalyes/go-bot"
+	gobot "github.com/HitGameAI/apex-bot"
 )
 
 // Send 实现 gobot.Adapter，按消息类型选择 sendMessage 或 sendPhoto

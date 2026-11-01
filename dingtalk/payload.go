@@ -14,7 +14,7 @@ package dingtalk
 import (
 	"strings"
 
-	gobot "github.com/kamalyes/go-bot"
+	gobot "github.com/HitGameAI/apex-bot"
 )
 
 // atField 构造 @ 字段：AtUserIDs 映射为 atUserIds（平台侧限制最多 @ 50 人），

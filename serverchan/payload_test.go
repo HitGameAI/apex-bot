@@ -14,7 +14,7 @@ package serverchan
 import (
 	"testing"
 
-	gobot "github.com/kamalyes/go-bot"
+	gobot "github.com/HitGameAI/apex-bot"
 )
 
 // TestTitleOfTitlePreferred 验证 Title 非空时直接使用

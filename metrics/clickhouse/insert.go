@@ -16,7 +16,7 @@ import (
 	"strings"
 	"time"
 
-	gobot "github.com/kamalyes/go-bot"
+	gobot "github.com/HitGameAI/apex-bot"
 )
 
 // insertColumns 是 bot_send_events 的写入列清单，列序与参数绑定顺序一致

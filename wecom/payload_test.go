@@ -14,7 +14,7 @@ package wecom
 import (
 	"testing"
 
-	gobot "github.com/kamalyes/go-bot"
+	gobot "github.com/HitGameAI/apex-bot"
 )
 
 // TestTextPayloadPlain 验证无提及时省略 mentioned_list 字段

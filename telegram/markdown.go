@@ -16,7 +16,7 @@ import (
 	"regexp"
 	"strings"
 
-	gobot "github.com/kamalyes/go-bot"
+	gobot "github.com/HitGameAI/apex-bot"
 )
 
 // 通用 markdown 行内与标题语法的转换规则

@@ -18,7 +18,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	gobot "github.com/kamalyes/go-bot"
+	gobot "github.com/HitGameAI/apex-bot"
 )
 
 // newTestAdapter 基于 httptest 服务器构造适配器，APIBase 指向测试服务器

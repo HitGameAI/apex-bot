@@ -16,9 +16,9 @@ import (
 	"encoding/json"
 	"strings"
 
-	gobot "github.com/kamalyes/go-bot"
-	"github.com/kamalyes/go-toolbox/pkg/httpx"
-	"github.com/kamalyes/go-toolbox/pkg/mathx"
+	gobot "github.com/HitGameAI/apex-bot"
+	"github.com/HitGameAI/apex-toolbox/pkg/httpx"
+	"github.com/HitGameAI/apex-toolbox/pkg/mathx"
 )
 
 // AppConfig 配置 Lark 应用机器人（自建应用形态），AppID 与 AppSecret 必填

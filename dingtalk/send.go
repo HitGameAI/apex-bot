@@ -17,8 +17,8 @@ import (
 	"net/url"
 	"time"
 
-	gobot "github.com/kamalyes/go-bot"
-	"github.com/kamalyes/go-toolbox/pkg/httpx"
+	gobot "github.com/HitGameAI/apex-bot"
+	"github.com/HitGameAI/apex-toolbox/pkg/httpx"
 )
 
 // Send 实现 gobot.Adapter：text 直发、markdown 降级后发送；

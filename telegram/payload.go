@@ -15,7 +15,7 @@ import (
 	"html"
 	"strings"
 
-	gobot "github.com/kamalyes/go-bot"
+	gobot "github.com/HitGameAI/apex-bot"
 )
 
 // renderText 渲染纯文本消息：正文加 @ 提及

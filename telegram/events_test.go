@@ -19,7 +19,7 @@ import (
 	"net/http"
 	"testing"
 
-	gobot "github.com/kamalyes/go-bot"
+	gobot "github.com/HitGameAI/apex-bot"
 )
 
 // readAll 读取请求体并在失败时终止用例

@@ -19,7 +19,7 @@ import (
 	"testing"
 	"time"
 
-	gobot "github.com/kamalyes/go-bot"
+	gobot "github.com/HitGameAI/apex-bot"
 )
 
 // eventServer 记录每次 getUpdates 的请求游标与 handler 收到的事件批次，

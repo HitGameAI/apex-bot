@@ -17,7 +17,7 @@ import (
 	"sync"
 	"time"
 
-	gobot "github.com/kamalyes/go-bot"
+	gobot "github.com/HitGameAI/apex-bot"
 )
 
 // tokenRefreshAhead 是令牌到期前的提前刷新量，避免边界时刻请求失败

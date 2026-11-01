@@ -19,7 +19,7 @@ import (
 	"net/url"
 	"testing"
 
-	gobot "github.com/kamalyes/go-bot"
+	gobot "github.com/HitGameAI/apex-bot"
 )
 
 // captureForm 返回一个捕获路径、query 与表单请求体并回写指定响应的 handler

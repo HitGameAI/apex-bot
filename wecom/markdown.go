@@ -14,7 +14,7 @@ package wecom
 import (
 	"strings"
 
-	gobot "github.com/kamalyes/go-bot"
+	gobot "github.com/HitGameAI/apex-bot"
 )
 
 // markdownToWecomMarkdown 把通用 markdown 降级为企微支持的语法子集：

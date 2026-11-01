@@ -22,7 +22,7 @@ import (
 	"strings"
 	"testing"
 
-	gobot "github.com/kamalyes/go-bot"
+	gobot "github.com/HitGameAI/apex-bot"
 )
 
 // captureRequest 返回一个捕获路径、query 与请求体并回写指定响应的 handler

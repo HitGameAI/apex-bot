@@ -18,9 +18,9 @@ import (
 	"context"
 	"strings"
 
-	gobot "github.com/kamalyes/go-bot"
-	"github.com/kamalyes/go-toolbox/pkg/httpx"
-	"github.com/kamalyes/go-toolbox/pkg/mathx"
+	gobot "github.com/HitGameAI/apex-bot"
+	"github.com/HitGameAI/apex-toolbox/pkg/httpx"
+	"github.com/HitGameAI/apex-toolbox/pkg/mathx"
 )
 
 // DefaultAPIBase 是 Server酱 Turbo 官方推送地址

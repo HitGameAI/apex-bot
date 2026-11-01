@@ -15,8 +15,8 @@ import (
 	"context"
 	"time"
 
-	"github.com/kamalyes/go-toolbox/pkg/mathx"
-	"github.com/kamalyes/go-toolbox/pkg/retry"
+	"github.com/HitGameAI/apex-toolbox/pkg/mathx"
+	"github.com/HitGameAI/apex-toolbox/pkg/retry"
 )
 
 // RetryPolicy 控制发送失败后如何重试，底层由 go-toolbox 的 retry 包驱动

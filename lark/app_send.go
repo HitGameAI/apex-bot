@@ -14,7 +14,7 @@ package lark
 import (
 	"context"
 
-	gobot "github.com/kamalyes/go-bot"
+	gobot "github.com/HitGameAI/apex-bot"
 )
 
 // Send 实现 gobot.Adapter：text 直发、markdown 组装 interactive 卡片；

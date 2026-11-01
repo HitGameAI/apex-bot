@@ -14,7 +14,7 @@ package serverchan
 import (
 	"strings"
 
-	gobot "github.com/kamalyes/go-bot"
+	gobot "github.com/HitGameAI/apex-bot"
 )
 
 // titleOf 取推送标题（微信通知栏展示）：

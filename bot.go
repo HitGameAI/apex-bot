@@ -18,9 +18,9 @@ import (
 	"sync"
 	"time"
 
-	gologger "github.com/kamalyes/go-logger"
-	"github.com/kamalyes/go-toolbox/pkg/breaker"
-	"github.com/kamalyes/go-toolbox/pkg/mathx"
+	gologger "github.com/HitGameAI/apex-toolbox/pkg/logger"
+	"github.com/HitGameAI/apex-toolbox/pkg/breaker"
+	"github.com/HitGameAI/apex-toolbox/pkg/mathx"
 )
 
 // Bot 是消息发送的统一入口：把一个 Adapter 包装上通用能力

@@ -14,7 +14,7 @@ package dingtalk
 import (
 	"strings"
 
-	gobot "github.com/kamalyes/go-bot"
+	gobot "github.com/HitGameAI/apex-bot"
 )
 
 // markdownToDingtalkMarkdown 把通用 markdown 降级为钉钉支持的语法子集：

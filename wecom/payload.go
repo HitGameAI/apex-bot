@@ -17,7 +17,7 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 
-	gobot "github.com/kamalyes/go-bot"
+	gobot "github.com/HitGameAI/apex-bot"
 )
 
 // textPayload 组装 text 消息体：正文进 text.content，

@@ -18,7 +18,7 @@ import (
 	"testing"
 	"time"
 
-	gobot "github.com/kamalyes/go-bot"
+	gobot "github.com/HitGameAI/apex-bot"
 )
 
 // newPushAdapter 基于环境变量里的真实 SendKey 构造适配器：

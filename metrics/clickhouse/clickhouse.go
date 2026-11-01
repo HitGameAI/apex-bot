@@ -20,9 +20,9 @@ import (
 	"sync/atomic"
 	"time"
 
-	gobot "github.com/kamalyes/go-bot"
-	"github.com/kamalyes/go-toolbox/pkg/mathx"
-	"github.com/kamalyes/go-toolbox/pkg/syncx"
+	gobot "github.com/HitGameAI/apex-bot"
+	"github.com/HitGameAI/apex-toolbox/pkg/mathx"
+	"github.com/HitGameAI/apex-toolbox/pkg/syncx"
 	"gorm.io/gorm"
 )
 

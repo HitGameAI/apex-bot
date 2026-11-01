@@ -14,7 +14,7 @@ package dingtalk
 import (
 	"testing"
 
-	gobot "github.com/kamalyes/go-bot"
+	gobot "github.com/HitGameAI/apex-bot"
 )
 
 // TestAtFieldNilWithoutMention 验证无提及时省略 at 字段

@@ -14,7 +14,7 @@ package telegram
 import (
 	"testing"
 
-	gobot "github.com/kamalyes/go-bot"
+	gobot "github.com/HitGameAI/apex-bot"
 )
 
 // newRenderAdapter 按指定渲染格式构造适配器（不发出任何请求）

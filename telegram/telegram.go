@@ -19,9 +19,9 @@ import (
 	"context"
 	"strings"
 
-	gobot "github.com/kamalyes/go-bot"
-	"github.com/kamalyes/go-toolbox/pkg/httpx"
-	"github.com/kamalyes/go-toolbox/pkg/mathx"
+	gobot "github.com/HitGameAI/apex-bot"
+	"github.com/HitGameAI/apex-toolbox/pkg/httpx"
+	"github.com/HitGameAI/apex-toolbox/pkg/mathx"
 )
 
 // DefaultAPIBase 是 Telegram Bot API 官方地址，测试时可替换为本地实例
