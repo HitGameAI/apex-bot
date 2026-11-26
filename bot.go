@@ -18,8 +18,8 @@ import (
 	"sync"
 	"time"
 
-	gologger "github.com/HitGameAI/apex-toolbox/pkg/logger"
 	"github.com/HitGameAI/apex-toolbox/pkg/breaker"
+	gologger "github.com/HitGameAI/apex-toolbox/pkg/logger"
 	"github.com/HitGameAI/apex-toolbox/pkg/mathx"
 )
 

@@ -1,10 +1,6 @@
 name: Test
 
-# 实际流程全在 kamalyes/deploy-pipeline 的 go-library-test.yml 里，所有 Go 库共用一份
-# 改那一份就等于改所有库；本文件只保留触发器与平台选择，Go 版本矩阵由流水线按 go.mod 推导
-#
-# [EN] The pipeline lives in go-library-test.yml in kamalyes/deploy-pipeline; this file only
-# keeps the triggers and the platform choice, and the Go version matrix is derived there
+# Go 库的编译、静态分析与测试由组织工作流统一维护。
 
 on:
   push:
@@ -21,12 +17,13 @@ on:
       - "docs/**"
       - "**.md"
 
+permissions:
+  contents: read
+
 jobs:
   test:
-    uses: kamalyes/deploy-pipeline/.github/workflows/go-library-test.yml@master
+    uses: HitGameAI/deploy-pipeline/.github/workflows/go-library-test.yml@fe59068c93c25b65ce4b9db6e8e5d801533e7d27
     with:
       platforms: '["ubuntu-latest"]'
-    secrets:
-      # 显式映射而非 secrets: inherit —— inherit 跨账号调用时拿不到值
-      # [EN] Mapped explicitly rather than with secrets: inherit, which yields nothing across accounts
-      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      test-flags: "-short -race -mod=readonly"
+      coverage-upload: false
