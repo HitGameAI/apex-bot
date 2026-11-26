@@ -1,0 +1,95 @@
+name: 验证 Bot 发布候选
+
+on:
+  push:
+    branches:
+      - codex/validate-bot-release-candidate-20261126
+
+permissions:
+  contents: read
+
+jobs:
+  bot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GOTOOLCHAIN: local
+      GOWORK: 'off'
+      GOENV: 'off'
+      GOTELEMETRY: 'off'
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff
+        with:
+          go-version: '1.25.0'
+          cache: false
+      - name: 校验根依赖锁和格式
+        shell: bash
+        env:
+          GOAUTH: 'off'
+          GOPROXY: https://proxy.golang.org
+          GOSUMDB: sum.golang.org
+          GONOPROXY: none
+          GONOSUMDB: none
+          GOVCS: '*:off'
+        run: |
+          set -euo pipefail
+          test "$(go env GOVERSION)" = go1.25.0
+          test "$(go env GOOS)/$(go env GOARCH)" = linux/amd64
+          printf '%s\n' \
+            'f794a3a3eb8b21b91ba123afcb0c6f326a87a86a364ec2a7281a395ff726c2b0  go.mod' \
+            '19a64d92de0258f1766a1347ee641229e4c78d61b3d3b5b8fea195de4b142414  go.sum' \
+            > "$RUNNER_TEMP/bot-root-locks.sha256"
+          sha256sum --check "$RUNNER_TEMP/bot-root-locks.sha256"
+          test "$(go list -mod=readonly -m -f '{{.Version}}' github.com/nats-io/nats-server/v2)" = v2.11.9
+          test "$(go list -mod=readonly -m -f '{{.Version}}' github.com/nats-io/nats.go)" = v1.45.0
+          go mod download
+          go mod verify
+          go mod tidy -diff
+          formatted="$(gofmt -s -l .)"
+          if [ -n "$formatted" ]; then
+            printf '%s\n' "$formatted"
+            exit 1
+          fi
+      - name: 整仓编译、静态分析和竞态测试
+        shell: bash
+        run: |
+          set -euo pipefail
+          isolated_home="$(mktemp -d "$RUNNER_TEMP/bot-full.XXXXXXXX")"
+          go_path="$(command -v go)"
+          go_mod_cache="$(go env GOMODCACHE)"
+          sudo -n unshare --net -- bash -s -- \
+            "$(id -u)" "$(id -g)" "$isolated_home" "$go_path" "$go_mod_cache" <<'ISOLATED'
+          set -euo pipefail
+          run_uid="$1"
+          run_gid="$2"
+          home_dir="$3"
+          go_path="$4"
+          go_mod_cache="$5"
+          ip link set lo up
+          test "$(ip -o link show | cut -d: -f2 | tr -d ' ')" = lo
+          test -z "$(ip -4 route list default)"
+          test -z "$(ip -6 route list default)"
+          if ip route get 192.0.2.1 >/dev/null 2>&1; then
+            echo "Isolated network unexpectedly has a route outside loopback." >&2
+            exit 1
+          fi
+          as_runner() {
+            setpriv --reuid="$run_uid" --regid="$run_gid" --clear-groups -- \
+              env -i PATH=/usr/bin:/bin HOME="$home_dir" GOCACHE="$home_dir/cache" \
+              GOMODCACHE="$go_mod_cache" GOVCS='*:off' GOAUTH=off GOPROXY=off \
+              GOSUMDB=off GOTOOLCHAIN=local GOWORK=off GOENV=off GOTELEMETRY=off \
+              CGO_ENABLED=1 "$go_path" "$@"
+          }
+          as_runner build -mod=readonly ./...
+          as_runner vet -mod=readonly ./...
+          as_runner test -mod=readonly -short -race -json -count=1 -timeout=120s \
+            -coverprofile="$home_dir/coverage.out" ./...
+          as_runner tool cover -func="$home_dir/coverage.out" | tail -1
+          ISOLATED
+      - name: 核对测试后根依赖锁
+        if: ${{ always() }}
+        shell: bash
+        run: sha256sum --check "$RUNNER_TEMP/bot-root-locks.sha256"
