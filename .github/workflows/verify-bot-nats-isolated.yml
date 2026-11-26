@@ -43,8 +43,15 @@ jobs:
             'dcaf8ab9da0a0de8f503a6d6fdf4f7aee78f8781a4f86b2fc03e1a7973bc5177  go.sum' \
             > "$RUNNER_TEMP/bot-locks.sha256"
           sha256sum --check "$RUNNER_TEMP/bot-locks.sha256"
-          go mod download
-          go mod verify
+          printf '%s\n' \
+            'a968e18001433441a6d52259954c9ccd58253f6a2e81578cf6570e6a864dc052  .github/fixtures/bot-nats/queue.mod' \
+            '13a255371a310d7b761caac1e0eb1a57ce3e14da1fa008f52afdd5e581cb182a  .github/fixtures/bot-nats/queue.sum' \
+            >> "$RUNNER_TEMP/bot-locks.sha256"
+          module_file=.github/fixtures/bot-nats/queue.mod
+          test "$(go list -modfile="$module_file" -mod=readonly -m -f '{{.Version}}' github.com/nats-io/nats-server/v2)" = v2.11.9
+          test "$(go list -modfile="$module_file" -mod=readonly -m -f '{{.Version}}' github.com/nats-io/nats.go)" = v1.45.0
+          GOFLAGS="-modfile=$module_file -mod=readonly" go mod download
+          GOFLAGS="-modfile=$module_file -mod=readonly" go mod verify
           sha256sum --check "$RUNNER_TEMP/bot-locks.sha256"
       - name: 在仅有回环接口的 Linux 网络空间验证队列
         shell: bash
@@ -76,9 +83,11 @@ jobs:
               GOSUMDB=off GOTOOLCHAIN=local GOWORK=off GOENV=off GOTELEMETRY=off \
               CGO_ENABLED=1 "$go_path" "$@"
           }
-          as_runner build -mod=readonly ./adapter/nats
-          as_runner vet -mod=readonly ./adapter/nats
-          as_runner test -mod=readonly -race -json -count=1 -timeout=75s ./adapter/nats
+          module_file=.github/fixtures/bot-nats/queue.mod
+          as_runner build -modfile="$module_file" -mod=readonly ./adapter/nats
+          as_runner vet -modfile="$module_file" -mod=readonly ./adapter/nats
+          as_runner test -modfile="$module_file" -mod=readonly -race -json -count=1 -timeout=75s ./adapter/nats
+          as_runner test -modfile="$module_file" -mod=readonly -race -json -run '^TestConsumeLoadBalances$' -count=10 -timeout=75s ./adapter/nats
           ISOLATED
       - name: 核对测试后依赖锁
         if: ${{ always() }}
