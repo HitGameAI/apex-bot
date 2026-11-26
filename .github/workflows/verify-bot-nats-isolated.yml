@@ -1,0 +1,86 @@
+name: 验证 Bot 的 NATS 队列
+
+on:
+  push:
+    branches:
+      - codex/verify-bot-nats-20261126
+
+permissions:
+  contents: read
+
+jobs:
+  queue:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      GOTOOLCHAIN: local
+      GOWORK: 'off'
+      GOENV: 'off'
+      GOTELEMETRY: 'off'
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff
+        with:
+          go-version: '1.25.0'
+          cache: false
+      - name: 下载并校验公开模块
+        shell: bash
+        env:
+          GOAUTH: 'off'
+          GOPROXY: https://proxy.golang.org
+          GOSUMDB: sum.golang.org
+          GONOPROXY: none
+          GONOSUMDB: none
+          GOVCS: '*:off'
+        run: |
+          set -euo pipefail
+          test "$(go env GOVERSION)" = go1.25.0
+          test "$(go env GOOS)/$(go env GOARCH)" = linux/amd64
+          printf '%s\n' \
+            '95940167690bb0aa04d85b732a6695f281c42f63891ab01508cf17338e13682e  go.mod' \
+            'dcaf8ab9da0a0de8f503a6d6fdf4f7aee78f8781a4f86b2fc03e1a7973bc5177  go.sum' \
+            > "$RUNNER_TEMP/bot-locks.sha256"
+          sha256sum --check "$RUNNER_TEMP/bot-locks.sha256"
+          go mod download
+          go mod verify
+          sha256sum --check "$RUNNER_TEMP/bot-locks.sha256"
+      - name: 在仅有回环接口的 Linux 网络空间验证队列
+        shell: bash
+        run: |
+          set -euo pipefail
+          isolated_home="$(mktemp -d "$RUNNER_TEMP/bot-nats.XXXXXXXX")"
+          go_path="$(command -v go)"
+          go_mod_cache="$(go env GOMODCACHE)"
+          sudo -n unshare --net -- bash -s -- \
+            "$(id -u)" "$(id -g)" "$isolated_home" "$go_path" "$go_mod_cache" <<'ISOLATED'
+          set -euo pipefail
+          run_uid="$1"
+          run_gid="$2"
+          home_dir="$3"
+          go_path="$4"
+          go_mod_cache="$5"
+          ip link set lo up
+          test "$(ip -o link show | cut -d: -f2 | tr -d ' ')" = lo
+          test -z "$(ip -4 route list default)"
+          test -z "$(ip -6 route list default)"
+          if ip route get 192.0.2.1 >/dev/null 2>&1; then
+            echo "Isolated network unexpectedly has a route outside loopback." >&2
+            exit 1
+          fi
+          as_runner() {
+            setpriv --reuid="$run_uid" --regid="$run_gid" --clear-groups -- \
+              env -i PATH=/usr/bin:/bin HOME="$home_dir" GOCACHE="$home_dir/cache" \
+              GOMODCACHE="$go_mod_cache" GOVCS='*:off' GOAUTH=off GOPROXY=off \
+              GOSUMDB=off GOTOOLCHAIN=local GOWORK=off GOENV=off GOTELEMETRY=off \
+              CGO_ENABLED=1 "$go_path" "$@"
+          }
+          as_runner build -mod=readonly ./adapter/nats
+          as_runner vet -mod=readonly ./adapter/nats
+          as_runner test -mod=readonly -race -json -count=1 -timeout=75s ./adapter/nats
+          ISOLATED
+      - name: 核对测试后依赖锁
+        if: ${{ always() }}
+        shell: bash
+        run: sha256sum --check "$RUNNER_TEMP/bot-locks.sha256"
