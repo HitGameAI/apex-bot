@@ -31,6 +31,7 @@ import (
 func newJSServer(t *testing.T) *server.Server {
 	t.Helper()
 	srv, err := server.NewServer(&server.Options{
+		Host:      "127.0.0.1",
 		JetStream: true,
 		StoreDir:  t.TempDir(),
 		Port:      -1,
