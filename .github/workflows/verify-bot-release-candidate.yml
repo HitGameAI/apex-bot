@@ -60,14 +60,16 @@ jobs:
           isolated_home="$(mktemp -d "$RUNNER_TEMP/bot-full.XXXXXXXX")"
           go_path="$(command -v go)"
           go_mod_cache="$(go env GOMODCACHE)"
+          go_root="$(go env GOROOT)"
           sudo -n unshare --net -- bash -s -- \
-            "$(id -u)" "$(id -g)" "$isolated_home" "$go_path" "$go_mod_cache" <<'ISOLATED'
+            "$(id -u)" "$(id -g)" "$isolated_home" "$go_path" "$go_mod_cache" "$go_root" <<'ISOLATED'
           set -euo pipefail
           run_uid="$1"
           run_gid="$2"
           home_dir="$3"
           go_path="$4"
           go_mod_cache="$5"
+          go_root="$6"
           ip link set lo up
           test "$(ip -o link show | cut -d: -f2 | tr -d ' ')" = lo
           test -z "$(ip -4 route list default)"
@@ -78,11 +80,12 @@ jobs:
           fi
           as_runner() {
             setpriv --reuid="$run_uid" --regid="$run_gid" --clear-groups -- \
-              env -i PATH=/usr/bin:/bin HOME="$home_dir" GOCACHE="$home_dir/cache" \
+              env -i PATH="$go_root/bin:/usr/bin:/bin" GOROOT="$go_root" HOME="$home_dir" GOCACHE="$home_dir/cache" \
               GOMODCACHE="$go_mod_cache" GOVCS='*:off' GOAUTH=off GOPROXY=off \
               GOSUMDB=off GOTOOLCHAIN=local GOWORK=off GOENV=off GOTELEMETRY=off \
               CGO_ENABLED=1 "$go_path" "$@"
           }
+          test "$(as_runner env GOVERSION)" = go1.25.0
           as_runner build -mod=readonly ./...
           as_runner vet -mod=readonly ./...
           as_runner test -mod=readonly -short -race -json -count=1 -timeout=120s \
