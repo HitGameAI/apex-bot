@@ -12,7 +12,21 @@ jobs:
   queue:
     runs-on: ubuntu-latest
     timeout-minutes: 12
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - profile: queue
+            go: '1.25.0'
+            nats: v1.45.0
+          - profile: subscription
+            go: '1.26.0'
+            nats: v1.53.1
+    name: ${{ matrix.profile }}
     env:
+      PROFILE: ${{ matrix.profile }}
+      EXPECTED_GO: ${{ matrix.go }}
+      EXPECTED_NATS: ${{ matrix.nats }}
       GOTOOLCHAIN: local
       GOWORK: 'off'
       GOENV: 'off'
@@ -23,7 +37,7 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff
         with:
-          go-version: '1.25.0'
+          go-version: ${{ matrix.go }}
           cache: false
       - name: 下载并校验公开模块
         shell: bash
@@ -36,7 +50,7 @@ jobs:
           GOVCS: '*:off'
         run: |
           set -euo pipefail
-          test "$(go env GOVERSION)" = go1.25.0
+          test "$(go env GOVERSION)" = "go$EXPECTED_GO"
           test "$(go env GOOS)/$(go env GOARCH)" = linux/amd64
           printf '%s\n' \
             '95940167690bb0aa04d85b732a6695f281c42f63891ab01508cf17338e13682e  go.mod' \
@@ -46,10 +60,12 @@ jobs:
           printf '%s\n' \
             'a968e18001433441a6d52259954c9ccd58253f6a2e81578cf6570e6a864dc052  .github/fixtures/bot-nats/queue.mod' \
             '13a255371a310d7b761caac1e0eb1a57ce3e14da1fa008f52afdd5e581cb182a  .github/fixtures/bot-nats/queue.sum' \
+            '7fa94ffde0f152bae14350e193ecfea2076d510ba7ceb4fe621d702b40da6fe7  .github/fixtures/bot-nats/subscription.mod' \
+            '68fe45b06a16df1b26ef93f59063d269716a9416b5a68748bb63c3c256d7e9d5  .github/fixtures/bot-nats/subscription.sum' \
             >> "$RUNNER_TEMP/bot-locks.sha256"
-          module_file=.github/fixtures/bot-nats/queue.mod
+          module_file=".github/fixtures/bot-nats/$PROFILE.mod"
           test "$(go list -modfile="$module_file" -mod=readonly -m -f '{{.Version}}' github.com/nats-io/nats-server/v2)" = v2.11.9
-          test "$(go list -modfile="$module_file" -mod=readonly -m -f '{{.Version}}' github.com/nats-io/nats.go)" = v1.45.0
+          test "$(go list -modfile="$module_file" -mod=readonly -m -f '{{.Version}}' github.com/nats-io/nats.go)" = "$EXPECTED_NATS"
           GOFLAGS="-modfile=$module_file -mod=readonly" go mod download
           GOFLAGS="-modfile=$module_file -mod=readonly" go mod verify
           sha256sum --check "$RUNNER_TEMP/bot-locks.sha256"
@@ -61,13 +77,14 @@ jobs:
           go_path="$(command -v go)"
           go_mod_cache="$(go env GOMODCACHE)"
           sudo -n unshare --net -- bash -s -- \
-            "$(id -u)" "$(id -g)" "$isolated_home" "$go_path" "$go_mod_cache" <<'ISOLATED'
+            "$(id -u)" "$(id -g)" "$isolated_home" "$go_path" "$go_mod_cache" "$PROFILE" <<'ISOLATED'
           set -euo pipefail
           run_uid="$1"
           run_gid="$2"
           home_dir="$3"
           go_path="$4"
           go_mod_cache="$5"
+          profile="$6"
           ip link set lo up
           test "$(ip -o link show | cut -d: -f2 | tr -d ' ')" = lo
           test -z "$(ip -4 route list default)"
@@ -83,7 +100,7 @@ jobs:
               GOSUMDB=off GOTOOLCHAIN=local GOWORK=off GOENV=off GOTELEMETRY=off \
               CGO_ENABLED=1 "$go_path" "$@"
           }
-          module_file=.github/fixtures/bot-nats/queue.mod
+          module_file=".github/fixtures/bot-nats/$profile.mod"
           as_runner build -modfile="$module_file" -mod=readonly ./adapter/nats
           as_runner vet -modfile="$module_file" -mod=readonly ./adapter/nats
           as_runner test -modfile="$module_file" -mod=readonly -race -json -count=1 -timeout=75s ./adapter/nats
